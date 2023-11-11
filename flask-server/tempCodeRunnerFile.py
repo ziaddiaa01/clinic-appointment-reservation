@@ -1,0 +1,1 @@
+/patient/appointments/<patient_name>
