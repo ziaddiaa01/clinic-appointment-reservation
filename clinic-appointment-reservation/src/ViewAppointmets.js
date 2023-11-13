@@ -12,22 +12,10 @@ const ViewAppointments = (props) => {
     fetchAppointments();
   }, []);
 
-//   appointments
-// : 
-// Array(2)
-// 0
-// : 
-// {appointment_number: '1', date: '18/08/2022', doctor_name: 'jhon"', hour: '8:00 PM'}
-// 1
-// : 
-// {appointment_number: '2', date: '10/11/2023', doctor_name: 'ahmed', hour: '1:00 PM'}
-// length
-// : 
-// 2
   const fetchAppointments = async () => {
     try {
       const response = await axios.get(`/patient/appointments/${patientName}`);
-      setAppointments(response.data);
+      setAppointments(response.data.appointments);
       setLoading(false);
     } catch (error) {
       console.error(error);
