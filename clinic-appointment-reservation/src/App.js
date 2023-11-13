@@ -1,16 +1,15 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import Signup from './Signup';
-import Signin from './Signin';
-import PatientDashboard from './PatientDashboard';
-import DoctorDashboard from './DoctorDashboard';
+import Signup from './Signup'; // Update the import to use the correct component name
+import Signin from './Signin'; // Update the import to use the correct component name
 
 function App() {
   return (
     <Router>
-        <Routes>
+      <Routes>
         <Route path="/" element={<Signup />} />
-        </Routes>
+        <Route path="/Signin" element={<Signin />} />
+      </Routes>
     </Router>
   );
 }

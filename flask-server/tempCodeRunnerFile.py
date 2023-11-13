@@ -1,1 +1,1 @@
-/patient/appointments/<patient_name>
+modified_count

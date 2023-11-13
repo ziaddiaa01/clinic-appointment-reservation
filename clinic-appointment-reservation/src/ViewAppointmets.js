@@ -1,11 +1,16 @@
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import React, { useState, useEffect } from "react";
+import axios from "axios";
 
 const ViewAppointments = (props) => {
   const [appointments, setAppointments] = useState([]);
   const [patientName, setPatientName] = useState(props.patientName);
-  const [editableAppointmentId, setEditableAppointmentId] = useState('');
-  const [editableAppointment, setEditableAppointment] = useState({ date: '', hour: '', doctor_name:'' });
+  const [editableAppointmentId, setEditableAppointmentId] = useState("");
+  const [editableAppointment, setEditableAppointment] = useState({
+    date: "",
+    hour: "",
+    doctor_name: "",
+  });
+
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -28,11 +33,12 @@ const ViewAppointments = (props) => {
     try {
       // Delete the slot from the database
       await axios.delete(`/patient/delete/${appointment_id}`);
-
-      // Fetch the updated slots
-      fetchAppointments();
-
+      const updatedAppointments = appointments.filter(
+        (appointment) => appointment["appointment_number"] !== appointment_id
+      );
+      setAppointments(updatedAppointments);
       // Handle successful cancellation
+      fetchAppointments()
     } catch (error) {
       console.error(error);
       // Handle cancellation error
@@ -40,35 +46,41 @@ const ViewAppointments = (props) => {
   };
 
   const handleEdit = (appointment_id) => {
-    const appointmentToEdit = appointments.find((appointment) => appointment['appointment_number'] === appointment_id);
+    const appointmentToEdit = appointments.find((appointment) => appointment["appointment_number"] === appointment_id);
     setEditableAppointmentId(appointment_id);
     setEditableAppointment(appointmentToEdit);
   };
 
-  const handleSave = async (appointment_id, updatedAppointments) => {
+  const handleSave = async (appointment_id, updatedAppointment) => {
     try {
-      console.log(updatedAppointments)
-      // Update the slot in the database
-      const response = await axios.put(`/patient/edit/${patientName}/${appointment_id}`, updatedAppointments);
+      // Update the appointment in the database
+      const response = await axios.put(`/patient/edit/${patientName}/${appointment_id}`,updatedAppointment);
       console.log(response.data)
-
-      // Fetch the updated slots
-      fetchAppointments();
-
+      // Update the appointments array with the updated slot
+      const updatedAppointments = appointments.map((appointment) => {
+        if (appointment["appointment_number"] === appointment_id) {
+          return { ...appointment, ...updatedAppointment };
+        }
+        return appointment;
+      });
+      setAppointments(updatedAppointments);
+      // Clear the editable slot ID and slot data
+      setEditableAppointmentId('');
+      setEditableAppointment({ date: '', hour: '',doctor_name:'' });
       // Handle successful save
     } catch (error) {
       console.error(error);
       // Handle save error
     }
   };
-  
+
   return (
-    <div className="view-appointments">
-      <div className='container'>
+    <div className="view">
+      <div className="container">
         <h2>View appointments</h2>
         {loading ? (
           <p>Loading appointments...</p>
-        ) : appointments.length > 0 ? (
+        ) : typeof appointments == Array && appointments.length > 0 ? (
           <table>
             <thead>
               <tr>
@@ -80,14 +92,17 @@ const ViewAppointments = (props) => {
             </thead>
             <tbody>
               {appointments.map((appointment) => (
-                <tr key={appointment['appointment_number']}>
+                <tr key={appointment["appointment_number"]}>
                   <td>
-                    {editableAppointmentId === appointment['appointment_number'] ? (
+                    {editableAppointmentId === appointment["appointment_number"] ? (
                       <input
                         type="text"
                         value={editableAppointment.date}
                         onChange={(e) =>
-                          setEditableAppointment({ ...editableAppointment, date: e.target.value })
+                          setEditableAppointment({
+                            ...editableAppointment,
+                            date: e.target.value
+                          })
                         }
                       />
                     ) : (
@@ -95,12 +110,15 @@ const ViewAppointments = (props) => {
                     )}
                   </td>
                   <td>
-                    {editableAppointmentId === appointment['appointment_number'] ? (
+                    {editableAppointmentId === appointment["appointment_number"] ? (
                       <input
                         type="text"
                         value={editableAppointment.hour}
                         onChange={(e) =>
-                          setEditableAppointment({ ...editableAppointment, hour: e.target.value })
+                          setEditableAppointment({
+                            ...editableAppointment,
+                            hour: e.target.value
+                          })
                         }
                       />
                     ) : (
@@ -108,12 +126,15 @@ const ViewAppointments = (props) => {
                     )}
                   </td>
                   <td>
-                    {editableAppointmentId === appointment['appointment_number'] ? (
+                    {editableAppointmentId === appointment["appointment_number"] ? (
                       <input
                         type="text"
                         value={editableAppointment.doctor_name}
                         onChange={(e) =>
-                          setEditableAppointment({ ...editableAppointment, doctor_name: e.target.value })
+                          setEditableAppointment({
+                            ...editableAppointment,
+                            doctor_name: e.target.value
+                          })
                         }
                       />
                     ) : (
@@ -121,15 +142,15 @@ const ViewAppointments = (props) => {
                     )}
                   </td>
                   <td>
-                    {editableAppointmentId === appointment['appointment_number'] ? (
+                    {editableAppointmentId === appointment["appointment_number"] ? (
                       <>
-                        <button onClick={() => handleSave(appointment['appointment_number'], editableAppointmentId)}>Save</button>
+                        <button onClick={() => handleSave(appointment["appointment_number"], editableAppointment)}>Save</button>
                         <button onClick={() => setEditableAppointmentId('')}>Cancel</button>
                       </>
                     ) : (
-                      <button onClick={() => handleEdit(editableAppointmentId)}>Edit</button>
+                      <button onClick={() => handleEdit(appointment["appointment_number"])}>Edit</button>
                     )}
-                    <button onClick={() => handleCancel(patientName, editableAppointmentId)}>Cancel appointment</button>
+                    <button onClick={() => handleCancel(appointment["appointment_number"])}>Cancel appointment</button>
                   </td>
                 </tr>
               ))}

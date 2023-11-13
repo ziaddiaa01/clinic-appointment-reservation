@@ -9,7 +9,7 @@ const ViewSlots = (props) => {
 
   useEffect(() => {
     fetchSlots();
-  }, []);
+  }, [slots]);
 
   const fetchSlots = async () => {
     try {
@@ -69,7 +69,7 @@ const ViewSlots = (props) => {
   };
 
   return (
-    <div className="view-slots">
+    <div className="view">
       <div className='container'>
         <h2>View Slots</h2>
 

@@ -93,18 +93,20 @@ def create_appointment(patient_name):
     doctor_name = data['doctorName']
     date = data['date']
     hour = data['hour']
-    new_slot = {
+    appointments_count = appointments.count_documents({})
+    new_appointment = {
+        'appointment_number': str(appointments_count + 1),
         'patient_name': patient_name,
         'doctor_name': doctor_name,
         'date': date,
         'hour': hour,
     }
-    update = { '$push': new_slot }
-    result = appointments.insert_one(update)
-    if result.acknowledged:
+    result = appointments.insert_one(new_appointment)
+    if result.inserted_id:
         return jsonify({'message': 'Appointment inserted successfully'})
     else:
         return jsonify({'message': 'No changes were made'})
+
 
 
 
@@ -128,23 +130,27 @@ def edit_slot(doctor_id, slot_Id):
         return jsonify({'message': 'No changes were made'})
 
 @app.route('/patient/edit/<patient_name>/<appointment_id>', methods=['PUT'])
-def edit_appointment(patient_name , appointment_id):
+def edit_appointment(patient_name, appointment_id):
     data = request.get_json()
     name = data['doctor_name']
     date = data['date']
-    hour=['hour']
-    new_slot = {
-        'doctor_name':name,
-        'date':date,
-        'hour':hour
+    hour = data['hour']
+    new_appointment = {
+        'appointment_number': appointment_id,
+        'doctor_name': name,
+        'date': date,
+        'hour': hour
     }
-    filter = { 'patient_name': patient_name ,'appointment_id':appointment_id}
-    update = { '$set': { new_slot } }
-    result = appointments.update_one(filter, update)
+    filter = {'patient_name': patient_name, 'appointment_number': appointment_id}
+    update_query = {'$set': new_appointment}
+    result = appointments.update_one(filter, update_query)
     if result.modified_count > 0:
         return jsonify({'message': 'Appointment Updated successfully'})
     else:
         return jsonify({'message': 'No changes were made'})
+
+
+
 
 @app.route('/doctors', methods=['GET'])
 def get_doctors():

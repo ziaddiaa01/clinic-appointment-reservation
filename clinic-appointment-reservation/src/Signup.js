@@ -16,7 +16,7 @@ const Signup = () => {
       const response = await axios.post('/signup', { username, email, password ,role});
       console.log(response.data);
       // Redirect to another page after successful signup
-      navigate('./Signin');
+      navigate('/Signin');
     } catch (error) {
       console.error(error);
       // Handle signup error
