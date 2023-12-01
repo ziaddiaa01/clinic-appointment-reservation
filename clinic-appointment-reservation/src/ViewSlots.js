@@ -73,7 +73,7 @@ const ViewSlots = (props) => {
       <div className='container'>
         <h2>View Slots</h2>
 
-        {typeof slots == Array && slots.length > 0 ? (
+        {slots.length > 0 ? (
           <table>
             <thead>
               <tr>

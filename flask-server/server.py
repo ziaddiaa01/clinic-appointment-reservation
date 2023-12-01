@@ -6,7 +6,7 @@ import json
 
 app = Flask(__name__)
 jwt = JWTManager(app)
-client = MongoClient('mongodb://localhost:27017/')
+client = MongoClient(host='test_mongodb',port=27017, username='root', password='pass',authSource="admin")
 db = client['clinic_reservation_system']
 
 users = db.Users
@@ -212,5 +212,5 @@ def delete_appointment(appointment_id):
         return jsonify({'message': 'Appointment not found '})
 
 
-if __name__ == '__main__':
-    app.run(debug=True)
+if __name__=='__main__':
+    app.run(host="0.0.0.0", port=5000)

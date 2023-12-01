@@ -1,0 +1,4 @@
+flask
+pymongo
+Flask_JWT_Extended==4.4.2
+
