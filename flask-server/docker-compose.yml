@@ -1,0 +1,30 @@
+services:
+  server:
+    build: .
+    command: python -u server.py
+    ports:
+      - '5000:5000'
+    volumes:
+      - .:/server
+    links:
+      - db
+  db:
+    image: mongo:latest
+    hostname: test_mongodb
+    environment:
+      - MONGO_INITDB_DATABASE=clinic_reservation_system
+      - MONGO_INITDB_ROOT_USERNAME=root
+      - MONGO_INITDB_ROOT_PASSWORD=pass
+    volumes:
+      - ./init-db.js:/docker-entrypoint-initdb.d/init-db.js:ro
+    ports:
+      - 27017:27017
+  frontend:
+    build: ../clinic-appointment-reservation
+    container_name: frontend_c
+    depends_on:
+      - server
+    ports:
+      - '3000:3000'
+    stdin_open: true
+    tty:  true
