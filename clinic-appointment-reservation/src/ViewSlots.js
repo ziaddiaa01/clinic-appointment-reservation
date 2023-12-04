@@ -7,19 +7,22 @@ const ViewSlots = (props) => {
   const [editableSlotId, setEditableSlotId] = useState('');
   const [editableSlot, setEditableSlot] = useState({ date: '', hour: '' });
 
-  useEffect(() => {
-    fetchSlots();
-  }, [slots]);
 
-  const fetchSlots = async () => {
-    try {
-      const response = await axios.get(`/doctors/slots/${doctorId}`);
-      setSlots(response.data.slots);
-    } catch (error) {
-      console.error(error);
-      // Handle fetch slots error
-    }
-  };
+
+const fetchSlots = () => {
+    axios.get(`/doctors/slots/${doctorId}`)
+    .then((response) => {
+      const mysl = response.data.slots;
+      setSlots(mysl);
+    });
+};
+
+
+useEffect(() => {
+    const id = setInterval(() => fetchSlots(), 500)
+    return () => clearInterval(id)
+  }, [doctorId])
+
 
   const handleCancel = async (doctorId, slotId) => {
     try {
@@ -29,7 +32,7 @@ const ViewSlots = (props) => {
       // Remove the slot from the slots array
       const updatedSlots = slots.filter((slot) => slot['slot-id'] !== slotId);
       setSlots(updatedSlots);
-
+      fetchSlots()
       // Handle successful cancellation
     } catch (error) {
       console.error(error);
