@@ -8,6 +8,7 @@ ADD . /server
 WORKDIR /server
 
 # Set environment variables
+ENV APP_FILE=app.py
 ENV FLASK_DEBUG=1
 
 # Install dependencies
