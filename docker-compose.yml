@@ -1,7 +1,6 @@
 services:
   server:
     build: .
-    command: python -u app.py
     environment:
       - APP_FILE=app.py
     ports:
