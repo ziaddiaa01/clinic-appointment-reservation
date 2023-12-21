@@ -1,12 +1,16 @@
-FROM python:3.8
+FROM python:3.6
 
+# Set the working directory
 WORKDIR /server
 
-COPY requirements.txt .
+# Add the application code
+COPY . /server
 
-RUN pip install --no-cache-dir -r requirements.txt
+# Set environment variables
+ENV FLASK_DEBUG=1
 
-COPY . .
+# Install dependencies
+RUN pip install -r requirements.txt
 
 # Set the entry point for the container
 ENTRYPOINT ["python", "-u", "app.py"]
