@@ -1,18 +1,12 @@
-# Backend Dockerfile
-FROM python:3.6
+FROM python:3.8
 
-# Copy the contents of the current directory to /server in the image
-ADD . /server
-
-# Set the working directory to /server
 WORKDIR /server
 
-# Set environment variables
-ENV FLASK_DEBUG=1
-ENV APP_FILE=app.py
+COPY requirements.txt .
 
-# Install dependencies
-RUN pip install -r requirements.txt
+RUN pip install --no-cache-dir -r requirements.txt
 
+COPY . .
 
-
+# Set the entry point for the container
+ENTRYPOINT ["python", "-u", "app.py"]
