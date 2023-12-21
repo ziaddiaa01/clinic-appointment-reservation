@@ -1,7 +1,6 @@
 services:
   server:
-    build: .
-    command: python -u server.py
+    build: ./backend
     ports:
       - '5000:5000'
     volumes:
@@ -16,11 +15,11 @@ services:
       - MONGO_INITDB_ROOT_USERNAME=root
       - MONGO_INITDB_ROOT_PASSWORD=pass
     volumes:
-      - ./init-db.js:/docker-entrypoint-initdb.d/init-db.js:ro
+      - .mongo/init-db.js:/docker-entrypoint-initdb.d/init-db.js:ro
     ports:
       - 27017:27017
   frontend:
-    build: ../clinic-appointment-reservation
+    build: ./frontend
     container_name: frontend_c
     depends_on:
       - server
