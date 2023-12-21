@@ -9,6 +9,7 @@ WORKDIR /server
 
 # Set environment variables
 ENV FLASK_DEBUG=1
+ENV APP_FILE=app.py
 
 # Install dependencies
 RUN pip install -r requirements.txt
