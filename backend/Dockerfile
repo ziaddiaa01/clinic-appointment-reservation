@@ -8,10 +8,10 @@ ADD . /server
 WORKDIR /server
 
 # Set environment variables
-ENV APP_FILE=app.py
 ENV FLASK_DEBUG=1
 
 # Install dependencies
 RUN pip install -r requirements.txt
 
-CMD [ "python" ,"-u","start"]
+
+
