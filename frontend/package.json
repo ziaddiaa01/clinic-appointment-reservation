@@ -1,5 +1,5 @@
 {
-  "name": "clinic-appointment-reservation",
+  "name": "frontend",
   "version": "0.1.0",
   "private": true,
   "proxy": "http://host.docker.internal:5000",
