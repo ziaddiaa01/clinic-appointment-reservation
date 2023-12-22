@@ -1,4 +1,4 @@
-FROM node:17-alpine
+FROM quay.io/openshift/origin-nodejs:latest
 
 WORKDIR /app
 
