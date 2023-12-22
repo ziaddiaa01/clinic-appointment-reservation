@@ -1,6 +1,6 @@
 services:
   server:
-    build: .
+    build: ./backend
     environment:
       - APP_FILE=app.py
     ports:
