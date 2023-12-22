@@ -1,31 +1,26 @@
-# Builder image
-FROM node:17-alpine as builder
+# Use a specific version of Node.js as the base image
+FROM node:20.10.0 as build
 
+# Create the app directory
+RUN mkdir -p /app
 WORKDIR /app
 
 # Copy package.json and install dependencies
-COPY package.json .
+COPY package.json /app/
 RUN npm install
 
-# Copy the rest of the application code
-COPY . .
-
-# Build the application
+# Copy the application code and build the production version
+COPY . /app/
 RUN npm run build
 
-# Final image for running the application
+# Use nginx as the web server for serving the React application
 FROM nginx:alpine
 
-# Create and set the working directory
-WORKDIR /usr/share/nginx/html
+# Copy the built React application to the nginx server
+COPY --from=build /app/build /usr/share/nginx/html
 
-# Copy the built artifacts from the builder image
-COPY --from=builder /app/build .
-
-# ARG for API_URL
-ARG API_URL
-RUN sed -i "s|\$API_URL|${API_URL}|g" /usr/share/nginx/html/main.js
-
+# Expose port 80
 EXPOSE 80
 
+# Start nginx when the container starts
 CMD ["nginx", "-g", "daemon off;"]
