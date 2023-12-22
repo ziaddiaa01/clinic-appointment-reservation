@@ -1,16 +1,24 @@
-FROM node:17-alpine
+# Builder image
+FROM node:17-alpine as builder
 
 WORKDIR /app
 
+# Copy package.json and install dependencies
 COPY package.json .
-
-# Update npm to the latest version
-RUN npm install -g npm@latest
-
 RUN npm install
 
+# Copy the rest of the application code
 COPY . .
 
-EXPOSE 3000
+# Build the application
+RUN npm run build
 
-CMD ["npm", "start"]
+# Final image for running the application
+FROM nginx:alpine
+
+# Copy the built artifacts from the builder image
+COPY --from=builder /app/build /usr/share/nginx/html
+
+EXPOSE 80
+
+CMD ["nginx", "-g", "daemon off;"]
