@@ -1,15 +1,12 @@
-FROM node:14.15.4-alpine
+FROM --platform=$BUILDPLATFORM node:lts AS development
 
-WORKDIR /app
+WORKDIR /code
+COPY package.json /code/package.json
+COPY package-lock.json /code/package-lock.json
 
-COPY package.json .
+RUN npm ci && mkdir node_modules/.cache && chmod -R 777 node_modules/.cache
+COPY . /code
 
-RUN npm install
+ENV CI=true
 
-RUN npm run build
-
-COPY . .
-
-EXPOSE 3000
-
-CMD ["npm","start"]
+CMD [ "npm", "start" ]
