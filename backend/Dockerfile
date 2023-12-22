@@ -9,6 +9,8 @@ COPY . /server
 # Set environment variables
 ENV FLASK_DEBUG=1
 
+EXPOSE 5000
+
 # Install dependencies
 RUN pip install -r requirements.txt
 
