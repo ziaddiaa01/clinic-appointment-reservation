@@ -1,11 +1,8 @@
 from flask import Flask, request, jsonify
-from flask_jwt_extended import JWTManager,create_access_token
 from pymongo import MongoClient
 from bson import ObjectId
-import json
 
 app = Flask(__name__)
-jwt = JWTManager(app)
 client = MongoClient(host='test_mongodb',port=27017, username='root', password='pass',authSource="admin")
 db = client['clinic_reservation_system']
 
@@ -24,7 +21,7 @@ def signup():
     role = data['role']
     user = users.find_one({'email': email})
     if user:
-        return jsonify({'message': 'Email already exists'}), 
+        return ify({'message': 'Email already exists'}), 
     user_id = users.insert_one({
         'username': username,
         'email': email,
