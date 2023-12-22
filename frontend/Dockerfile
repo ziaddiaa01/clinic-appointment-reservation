@@ -1,6 +1,5 @@
 # Use a specific version of Node.js as the base image
-FROM node:20.10.0 as build
-
+FROM node:14.15.4-alpine
 # Create the app directory
 RUN mkdir -p /app
 WORKDIR /app
