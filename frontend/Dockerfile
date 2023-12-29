@@ -4,7 +4,8 @@ FROM node:alpine3.10 as build-step
 RUN mkdir /app
 WORKDIR /app
 
-COPY package.json /app
+COPY package.json /app/package.json
+COPY package-lock.json /app/package-lock.json
 RUN npm install
 COPY . /app
 
