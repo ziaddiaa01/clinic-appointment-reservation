@@ -1,16 +1,14 @@
-#Build Steps
-FROM node:alpine3.10 as build-step
-
-RUN mkdir /app
+# Stage 1: Install dependencies
+FROM node:12 AS dependencies
 WORKDIR /app
-
-COPY package.json /app/package.json
-COPY package-lock.json /app/package-lock.json
+COPY package*.json ./
 RUN npm install
-COPY . /app
 
+# Stage 2: Build the application
+FROM dependencies AS build
+COPY . .
 RUN npm run build
 
-#Run Steps
-FROM nginx:1.19.8-alpine  
-COPY --from=build-step /app/build /usr/share/nginx/html
+# Stage 3: Final image
+FROM nginx:alpine
+COPY --from=build /app/build /usr/share/nginx/html
