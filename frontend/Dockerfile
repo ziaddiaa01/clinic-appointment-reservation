@@ -1,12 +1,15 @@
-FROM --platform=$BUILDPLATFORM node:lts AS development
+#Build Steps
+FROM node:alpine3.10 as build-step
 
-WORKDIR /code
-COPY package.json /code/package.json
-COPY package-lock.json /code/package-lock.json
+RUN mkdir /app
+WORKDIR /app
 
-RUN npm ci && mkdir node_modules/.cache && chmod -R 777 node_modules/.cache
-COPY . /code
+COPY package.json /app
+RUN npm install
+COPY . /app
 
-ENV CI=true
+RUN npm run build
 
-CMD [ "npm", "start" ]
+#Run Steps
+FROM nginx:1.19.8-alpine  
+COPY --from=build-step /app/build /usr/share/nginx/html
